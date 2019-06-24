@@ -4,8 +4,8 @@ import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const SIGNUP_MUTATION = gql`
-  mutation SignupMutation($email: String!, $password: String!, $name: String!) {
-    signup(email: $email, password: $password, name: $name) {
+  mutation SignupMutation($name: String!, $email: String!, $password: String!, $confirmPassword: String!) {
+    signup(name: $name, email: $email, password: $password, confirmPassword: $confirmPassword) {
       token
     }
   }
@@ -22,42 +22,51 @@ const LOGIN_MUTATION = gql`
 class Login extends Component {
   state = {
     login: true, // switch between Login and SignUp
+    name: '',
     email: '',
     password: '',
-    name: '',
+    // confirmPassword: ''
   }
 
   render() {
-    const { login, email, password, name } = this.state
+    const { login, name, email, password } = this.state
     return (
       <div>
-        <h4>{login ? 'Login' : 'Sign Up'}</h4>
+        <h3>{login ? 'Login' : 'Sign Up'}</h3>
         <div>
           {!login && (
             <input
               value={name}
               onChange={e => this.setState({ name: e.target.value })}
               type="text"
-              placeholder="Your name"
+              placeholder="Name"
             />
           )}
           <input
             value={email}
             onChange={e => this.setState({ email: e.target.value })}
-            type="text"
-            placeholder="Your email address"
+            type="email"
+            placeholder="Email"
           />
           <input
             value={password}
             onChange={e => this.setState({ password: e.target.value })}
             type="password"
-            placeholder="Choose a safe password"
+            placeholder="Password"
+            />
+          {/* {!login && (
+          <input
+            value={confirmPassword}
+            onChange={e => this.setState({ password: e.target.value })}
+            type="password"
+            placeholder="Confirm Password"
           />
+          )} */}
         </div>
         <div>
         <Mutation
           mutation={login ? LOGIN_MUTATION : SIGNUP_MUTATION}
-          variables={{ email, password, name }}
+          variables={{ name, email, password }}
           onCompleted={data => this._confirm(data)}
         >
           {mutation => (
@@ -70,8 +79,8 @@ class Login extends Component {
             onClick={() => this.setState({ login: !login })}
           >
             {login
-              ? <button>Create an account?</button>
-              : <button>Already have an account?</button>}
+              ? <button>Create an Account</button>
+              : <button>Return to Login Page</button>}
           </div>
         </div>
       </div>
